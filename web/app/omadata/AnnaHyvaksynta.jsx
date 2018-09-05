@@ -9,8 +9,8 @@ export default ({ memberName, onAcceptClick, logoutURL }) => (
     <div className='acceptance-share-info'>
       <Text name='Palveluntarjoaja näkee'/>
       <ul>
-        <li><Text name='Näkee läsnäolotiedot'/></li>
-        <li><Text name='Näkee oppilaitoksen tiedot'/></li>
+        <li><Text name='Tiedot opiskeluoikeuksista'/></li>
+        <li><Text name='Nimi ja syntymäaika'/></li>
       </ul>
     </div>
     <div className='acceptance-button-container'>

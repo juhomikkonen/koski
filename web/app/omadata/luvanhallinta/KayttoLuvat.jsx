@@ -78,7 +78,7 @@ const Kayttolupa = ({kayttolupa, removeCallback}) => {
           </div>
 
           <div className='oikeudet'>
-            <span className='list-label'><Text name='Palveluntarjoaja näkee seuraavat opintoihisi liittyvät tiedot'/>{':'}</span>
+            <span className='list-label'><Text name='Palveluntarjoaja näkee'/>{':'}</span>
             <ul>
               <li>
                 <Text name='Oppilaitosten läsnäolotiedot' />
