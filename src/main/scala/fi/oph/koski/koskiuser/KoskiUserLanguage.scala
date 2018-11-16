@@ -26,10 +26,10 @@ object KoskiUserLanguage extends Logging {
     response.addCookie(Cookie("lang", lang)(CookieOptions(path = "/")))
   }
 
-  def sanitizeLanguage(possibleLanguage: Option[String]): Option[String] = {
+  def sanitizeLanguage(possibleLanguage: Option[String], allowEnglish: Boolean = false): Option[String] = {
     possibleLanguage
       .map(_.toLowerCase)
       .filter(LocalizedString.languages.contains)
-      .filterNot(_ == "en") // can be removed when our UI actually supports English
+      .filterNot(_ == "en" && !allowEnglish) // can be removed when our UI actually supports English
   }
 }

@@ -15,9 +15,9 @@ trait LanguageSupport extends KoskiBaseServlet {
     "fi"
   }
 
-  def langFromCookie: Option[String] = sanitizeLanguage(request.cookies.get("lang"))
+  def langFromCookie(allowEnglish: Boolean = false): Option[String] = sanitizeLanguage(request.cookies.get("lang"), allowEnglish)
 
-  def setLangCookieFromDomainIfNecessary: Unit = if (langFromCookie.isEmpty) {
+  def setLangCookieFromDomainIfNecessary(allowEnglish: Boolean = false): Unit = if (langFromCookie(allowEnglish).isEmpty) {
     setLanguageCookie(langFromDomain, response)
   }
 

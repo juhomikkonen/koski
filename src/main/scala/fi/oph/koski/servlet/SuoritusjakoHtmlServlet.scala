@@ -5,7 +5,7 @@ import org.scalatra.ScalatraServlet
 
 class SuoritusjakoHtmlServlet(implicit val application: KoskiApplication) extends ScalatraServlet with HtmlServlet with OmaOpintopolkuSupport {
   get("/:secret") {
-    setLangCookieFromDomainIfNecessary
+    setLangCookieFromDomainIfNecessary()
     htmlIndex("koski-suoritusjako.js", responsive = true)
   }
 }

@@ -21,8 +21,8 @@ class MyDataReactServlet(implicit val application: KoskiApplication) extends Sca
    */
 
   before(nonErrorPage) {
-    setLangCookieFromDomainIfNecessary
-    val lang = langFromCookie.getOrElse(langFromDomain)
+    setLangCookieFromDomainIfNecessary(allowEnglish = true)
+    val lang = langFromCookie().getOrElse(langFromDomain)
 
     sessionOrStatus match {
       case Right(_) if shibbolethCookieFound =>

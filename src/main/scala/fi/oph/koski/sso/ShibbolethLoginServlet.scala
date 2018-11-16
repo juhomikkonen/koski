@@ -42,7 +42,7 @@ case class ShibbolethLoginServlet(application: KoskiApplication) extends ApiServ
       case Some(h) =>
         application.henkilöRepository.findByHetuOrCreateIfInYtrOrVirta(h, nimitiedot) match {
           case Some(oppija) =>
-            setUser(Right(localLogin(AuthenticationUser(oppija.oid, oppija.oid, s"${oppija.etunimet} ${oppija.sukunimi}", None, kansalainen = true), Some(langFromCookie.getOrElse(langFromDomain)))))
+            setUser(Right(localLogin(AuthenticationUser(oppija.oid, oppija.oid, s"${oppija.etunimet} ${oppija.sukunimi}", None, kansalainen = true), Some(langFromCookie().getOrElse(langFromDomain)))))
             redirect(onSuccess)
           case _ => eiSuorituksia
         }
