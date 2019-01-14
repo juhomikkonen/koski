@@ -48,6 +48,8 @@ class EditorKooditServlet(implicit val application: KoskiApplication) extends Ap
         toListModel(NuortenPerusopetusPakollisetOppiaineet(application.koodistoViitePalvelu).pakollistenOppiaineidenTaiToimintaAlueidenSuoritukset(luokkaAste.toInt, toimintaAlueittain))
       case ("koulutus", "201101") =>
         toListModel(NuortenPerusopetusPakollisetOppiaineet(application.koodistoViitePalvelu).päättötodistuksenSuoritukset(params("tyyppi"), toimintaAlueittain))
+      case ("oppiaineetdia", _) =>
+        toListModel(DIAOppiaineenOsasuoritukset(application.koodistoViitePalvelu).osasuoritukset(params("tyyppi")))
       case _ =>
         logger.error(s"Prefill failed for unexpected code ${params("koodistoUri")}/${params("koodiarvo")}")
         haltWithStatus(KoskiErrorCategory.notFound())
