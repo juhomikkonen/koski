@@ -565,6 +565,21 @@ describe('Ammatillinen koulutus', function() {
       })
     })
 
+    describe('Muu ammatillinen koulutus', function() {
+      before(
+        prepareForNewOppija('kalle', '230872-7258'),
+        addOppija.enterHenkilötiedot({ etunimet: 'Tero', kutsumanimi: 'Tero', sukunimi: 'Tyhjä'}),
+        addOppija.selectOppilaitos('Stadin'),
+        addOppija.selectOpiskeluoikeudenTyyppi('Ammatillinen koulutus'),
+        addOppija.selectOppimäärä('Muun ammatillisen koulutuksen suoritus'),
+        addOppija.selectMuuAmmatillinenKoulutus('Lennonjohtajan koulutus'),
+        addOppija.submitAndExpectSuccess('Tyhjä, Tero (230872-7258)', 'Lennonjohtajan koulutus')
+      )
+      it('voi olla ammatilliseen tehtävään valmistava koulutus', function() {
+        expect(opinnot.getTutkinto()).to.equal('Lennonjohtajan koulutus')
+      })
+    })
+
     describe('Opintojen rahoitus', function() {
       before(prepareForNewOppija('kalle', '230872-7258'))
       before(addOppija.enterValidDataAmmatillinen({opintojenRahoitus: 'Aikuisten osaamisperustan vahvistaminen'}))

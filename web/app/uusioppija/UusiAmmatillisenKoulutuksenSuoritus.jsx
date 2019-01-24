@@ -6,18 +6,20 @@ import {ift} from '../util/util'
 import Suoritustyyppi from './Suoritustyyppi'
 import {koodiarvoMatch, koodistoValues} from './koodisto'
 import SuoritustapaDropdown from './SuoritustapaDropdown'
+import MuuAmmatillinenKoulutusModuuli from './MuuAmmatillinenKoulutusModuuli'
 import Text from '../i18n/Text'
 import {setPeruste} from '../suoritus/PerusteDropdown'
 import Peruste from './Peruste'
 
 export default ({suoritusAtom, oppilaitosAtom, suorituskieliAtom}) => {
-  const suoritustyypitP = koodistoValues('suorituksentyyppi/ammatillinentutkinto,nayttotutkintoonvalmistavakoulutus,ammatillinentutkintoosittainen,valma,telma')
+  const suoritustyypitP = koodistoValues('suorituksentyyppi/ammatillinentutkinto,nayttotutkintoonvalmistavakoulutus,ammatillinentutkintoosittainen,valma,telma,muuammatillinenkoulutus')
   const tutkintoAtom = Atom()
   const suoritustyyppiAtom = Atom()
   const suoritustapaAtom = Atom()
   const perusteAtom = Atom()
+  const koulutusmoduuliAtom = Atom()
   suoritustyypitP.onValue(tyypit => suoritustyyppiAtom.set(
-    tyypit.find(koodiarvoMatch('ammatillinentutkinto', 'ammatillinentutkintoosittainen', 'valma', 'telma')))
+    tyypit.find(koodiarvoMatch('ammatillinentutkinto', 'ammatillinentutkintoosittainen', 'valma', 'telma', 'muuammatillinenkoulutus')))
   )
   oppilaitosAtom.changes().onValue(() => tutkintoAtom.set(undefined))
   suoritustyyppiAtom.changes().onValue(tyyppi => koodiarvoMatch('valma', 'telma')(tyyppi)
@@ -25,7 +27,7 @@ export default ({suoritusAtom, oppilaitosAtom, suorituskieliAtom}) => {
     : perusteAtom.set(null)
   )
 
-  const makeSuoritus = (oppilaitos, suoritustyyppi, tutkinto, suorituskieli, suoritustapa, peruste) => {
+  const makeSuoritus = (oppilaitos, suoritustyyppi, tutkinto, suorituskieli, suoritustapa, peruste, koulutusmoduuli) => {
     let tutkintoData = tutkinto && {
         tunniste: {
           koodiarvo: tutkinto.tutkintoKoodi,
@@ -93,9 +95,30 @@ export default ({suoritusAtom, oppilaitosAtom, suorituskieliAtom}) => {
         suorituskieli : suorituskieli
       }
     }
+    if (koodiarvoMatch('muuammatillinenkoulutus')(suoritustyyppi) && koulutusmoduuli) {
+      return {
+        koulutusmoduuli: {
+          tunniste: {
+            koodiarvo: koulutusmoduuli.koodiarvo,
+            koodistoUri: koulutusmoduuli.koodistoUri
+          },
+          kuvaus: koulutusmoduuli.nimi
+        },
+        toimipiste : oppilaitos,
+        tyyppi: { koodistoUri: 'suorituksentyyppi', koodiarvo: 'muuammatillinenkoulutus'},
+        suorituskieli : suorituskieli
+      }
+    }
   }
 
-  Bacon.combineWith(oppilaitosAtom, suoritustyyppiAtom, tutkintoAtom, suorituskieliAtom, suoritustapaAtom, perusteAtom, makeSuoritus).onValue(suoritus => suoritusAtom.set(suoritus))
+  Bacon.combineWith(oppilaitosAtom,
+                    suoritustyyppiAtom,
+                    tutkintoAtom,
+                    suorituskieliAtom,
+                    suoritustapaAtom,
+                    perusteAtom,
+                    koulutusmoduuliAtom,
+                    makeSuoritus).onValue(suoritus => suoritusAtom.set(suoritus))
   return (<div>
     <Suoritustyyppi suoritustyyppiAtom={suoritustyyppiAtom} suoritustyypitP={suoritustyypitP} title="Suoritustyyppi"/>
     {
@@ -103,12 +126,16 @@ export default ({suoritusAtom, oppilaitosAtom, suorituskieliAtom}) => {
     }
     <div className="tutkinto-autocomplete">
       {
-        ift(oppilaitosAtom.and(suoritustyyppiAtom.map(koodiarvoMatch('valma', 'telma')).not()), <TutkintoAutocomplete tutkintoAtom={tutkintoAtom} oppilaitosP={oppilaitosAtom} title={<Text name="Tutkinto"/>}/>)
+        ift(oppilaitosAtom.and(suoritustyyppiAtom.map(koodiarvoMatch('valma', 'telma', 'muuammatillinenkoulutus')).not()), <TutkintoAutocomplete tutkintoAtom={tutkintoAtom} oppilaitosP={oppilaitosAtom} title={<Text name="Tutkinto"/>}/>)
       }
     </div>
 
     {
       ift(suoritustyyppiAtom.map(koodiarvoMatch('ammatillinentutkinto', 'ammatillinentutkintoosittainen')), <SuoritustapaDropdown diaarinumero={tutkintoAtom.map('.diaarinumero')} suoritustapaAtom={suoritustapaAtom} title="Suoritustapa"/>)
     }
+    {
+      ift(suoritustyyppiAtom.map(koodiarvoMatch('muuammatillinenkoulutus')), <MuuAmmatillinenKoulutusModuuli koulutusmoduuliAtom={koulutusmoduuliAtom} />)
+    }
+
   </div>)
 }

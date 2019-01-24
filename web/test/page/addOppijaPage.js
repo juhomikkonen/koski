@@ -228,6 +228,9 @@ function AddOppijaPage() {
     selectKieli: function(kieli) {
       return selectFromDropdown('.kieli .dropdown', kieli)
     },
+    selectMuuAmmatillinenKoulutus: function(koulutus) {
+      return selectFromDropdown('.ammatilliseentehtavaanvalmistavakoulutus .dropdown', koulutus)
+    },
     goBack: click(findSingle('h1 a'))
   }
   function selectFromDropdown(selector, value, exact) {
