@@ -89,6 +89,7 @@ class OpiskeluoikeusQueryService(val db: DB) extends DatabaseExecutionContext wi
     paginationSettings: Option[PaginationSettings]
   )(implicit u: KoskiSession): Observable[QueryOppija] = {
     val pagination = paginationSettings.getOrElse(PaginationSettings(0, defaultPageSize))
+    //FIXME: aja transaktiossa
     val q: OidQueryResults = queryOids(filters, pagination)
     streamAction(queryData(q, filters)).map { row => row.copy(
       henkilö = row.henkilö.copy(linkitetytOidit = q.linkitetytOidit(row.henkilö.oid))
